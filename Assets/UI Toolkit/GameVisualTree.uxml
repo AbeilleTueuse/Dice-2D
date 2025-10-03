@@ -1,0 +1,40 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Style.uss?fileID=7433441132597879392&amp;guid=a62267ee241908e4383626990464fb52&amp;type=3#Style" />
+    <ui:VisualElement name="MenuRoot" class="menu-root">
+        <ui:VisualElement name="MainView" class="hide">
+            <ui:Button name="BackToMenuButton" text="Quitter la partie" class="menu-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="UI">
+            <ui:VisualElement name="NumPad">
+                <ui:Label name="NumberLabel" />
+                <ui:VisualElement name="Row1" class="numpad-row">
+                    <ui:Button text="1" name="ButtonNum1" class="numpad-button number" />
+                    <ui:Button text="2" name="ButtonNum2" class="numpad-button number" />
+                    <ui:Button text="3" name="ButtonNum3" class="numpad-button number" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Row2" class="numpad-row">
+                    <ui:Button text="4" name="ButtonNum4" class="numpad-button number" />
+                    <ui:Button text="5" name="ButtonNum5" class="numpad-button number" />
+                    <ui:Button text="6" name="ButtonNum6" class="numpad-button number" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Row3" class="numpad-row">
+                    <ui:Button text="7" name="ButtonNum7" class="numpad-button number" />
+                    <ui:Button text="8" name="ButtonNum8" class="numpad-button number" />
+                    <ui:Button text="9" name="ButtonNum9" class="numpad-button number" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Row4" class="numpad-row">
+                    <ui:Button text="✖" name="ButtonDelete" class="numpad-button clear" />
+                    <ui:Button text="0" name="ButtonNum0" class="numpad-button number" />
+                    <ui:Button text="✔" name="ButtonE" class="numpad-button validate" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Label name="CountdownLabel" class="countdown-label" />
+    <ui:VisualElement name="ResultsPanel" class="hide">
+        <ui:Label name="ResultsTitle" text="Résultats du round" class="results-title" />
+        <ui:VisualElement name="RoundResults" />
+        <ui:Label name="LeaderboardTitle" text="Classement global" class="results-title" />
+        <ui:VisualElement name="GlobalLeaderboard" />
+    </ui:VisualElement>
+</ui:UXML>

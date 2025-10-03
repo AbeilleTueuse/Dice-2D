@@ -1,0 +1,312 @@
+* {
+    font-size: 40px;
+}
+
+.menu-root {
+    justify-content: center;
+    margin: 50px;
+    height: 100%;
+}
+
+.menu-button {
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(42, 42, 42);
+    color: white;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    transition: background-color 0.15s ease, scale 0.15s ease;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.menu-button:hover {
+    background-color: rgb(61, 61, 61);
+    scale: 1.05;
+}
+
+.menu-button:active {
+    background-color: rgb(30, 30, 30);
+    scale: 0.97;
+}
+
+.menu-input {
+    height: 80px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+}
+
+.menu-label {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.room-title {
+    font-size: 50px;
+    color: rgb(255, 204, 0);
+    margin-bottom: 30px;
+}
+
+.player-list {
+    flex-grow: 1;
+    background-color: rgb(26, 26, 26);
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(68, 68, 68);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.player-button,
+.room-button {
+    background-color: transparent;
+    color: white;
+}
+
+.numpad-row {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+#NumPad {
+    width: 100%;
+    max-width: 1080px;
+    align-items: stretch;
+    margin-top: auto;
+}
+
+.numpad-row > Button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 10px;
+    height: 120px;
+    background-color: rgb(42, 42, 42);
+    color: white;
+    font-size: 50px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    justify-content: center;
+    align-items: center;
+}
+
+.numpad-row > Button:hover {
+    background-color: rgb(61, 61, 61);
+}
+
+.numpad-row > Button:active {
+    background-color: rgb(30, 30, 30);
+}
+
+#UI {
+    align-items: center;
+    height: 100%;
+}
+
+#NumberLabel {
+    color: white;
+    -unity-text-align: middle-center;
+    background-color: rgb(42, 42, 42);
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    margin-bottom: 10px;
+    height: 120px;
+    font-size: 80px;
+    -unity-text-align: middle-right;
+    padding-right: 50px;
+}
+
+/* Boutons numériques */
+.numpad-button.number {
+    background-color: #2A2A2A;
+    color: white;
+}
+.numpad-button.number:hover {
+    background-color: #3D3D3D;
+}
+.numpad-button.number:active {
+    background-color: #1E1E1E;
+}
+
+/* Bouton effacer (X) */
+.numpad-button.clear {
+    background-color: #8B0000;
+    color: white;
+}
+.numpad-button.clear:hover {
+    background-color: #B22222;
+}
+.numpad-button.clear:active {
+    background-color: #5C0000;
+}
+
+/* Bouton valider (V) */
+.numpad-button.validate {
+    background-color: #228B22;
+    color: white;
+}
+.numpad-button.validate:hover {
+    background-color: #32CD32;
+}
+.numpad-button.validate:active {
+    background-color: #006400;
+}
+
+
+#RoomSettings {
+    margin: 20px 0;
+}
+
+.menu-slider {
+    height: 80px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-slider .unity-base-slider__tracker {
+    height: 12px;
+    border-radius: 6px;
+    background-color: rgb(68, 68, 68);
+}
+
+.menu-slider .unity-base-slider__progress {
+    height: 12px;
+    border-radius: 6px;
+    background-color: rgb(255, 204, 0);
+}
+
+.menu-slider .unity-base-slider__dragger {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: white;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+}
+
+.menu-slider .unity-base-slider__drag-container {
+    margin: 0 20px;
+}
+
+.menu-slider .unity-base-field {
+    width: 90px;
+}
+
+.menu-slider .unity-base-text-field__input {
+    background-color: rgb(42, 42, 42);
+    padding: 20px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+}
+
+.unity-slider-int__label {
+    background-color: rgb(42, 42, 42);
+    padding: 20px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+}
+
+.menu-slider .unity-text-element {
+    color: white;
+    -unity-text-align: middle-center;
+}
+
+.countdown-label {
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    font-size: 120px;
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(149, 80, 80, 0.6);
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 100px;
+    padding-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+/* Panel global des résultats */
+#ResultsPanel {
+    position: absolute;
+    translate: -50% -50%;
+    top: 20%;
+    left: 50%;
+    width: 90%;
+    max-width: 800px;
+    background-color: rgba(42, 42, 42, 0.95);
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    padding: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: white;
+}
+
+/* Masque par défaut */
+.hide {
+    display: none;
+}
+
+/* Titre général */
+.results-title {
+    font-size: 60px;
+    -unity-font-style: bold;
+    color: rgb(255, 204, 0);
+    margin-bottom: 20px;
+    -unity-text-align: middle-center;
+}
+
+/* Labels des résultats du round */
+.results-round-label {
+    font-size: 40px;
+    color: white;
+    margin: 5px 0;
+    -unity-text-align: middle-center;
+}
+
+/* Global leaderboard */
+#LeaderboardTitle {
+    font-size: 50px;
+    -unity-font-style: bold;
+    color: rgb(0, 204, 255);
+    margin-top: 30px;
+    margin-bottom: 15px;
+    -unity-text-align: middle-center;
+}
+
+.results-global-label {
+    font-size: 35px;
+    color: rgb(200, 200, 200);
+    margin: 3px 0;
+    -unity-text-align: middle-center;
+}
+
+/* Option : petite animation d'apparition */
+.results-label-animate {
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.results-label-animate.show {
+    opacity: 1;
+}
