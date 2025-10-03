@@ -23,9 +23,9 @@
                     <ui:Button text="9" name="ButtonNum9" class="numpad-button number" />
                 </ui:VisualElement>
                 <ui:VisualElement name="Row4" class="numpad-row">
-                    <ui:Button text="✖" name="ButtonDelete" class="numpad-button clear" />
+                    <ui:Button name="ButtonDelete" class="numpad-button clear" style="background-image: resource(&apos;Graphics/backspace_40dp_FFFFFF_FILL0_wght400_GRAD0_opsz40&apos;); background-size: 40px 40px;" />
                     <ui:Button text="0" name="ButtonNum0" class="numpad-button number" />
-                    <ui:Button text="✔" name="ButtonE" class="numpad-button validate" />
+                    <ui:Button name="ButtonValidate" class="numpad-button validate" style="background-image: resource(&apos;Graphics/check_40dp_FFFFFF_FILL0_wght400_GRAD0_opsz40&apos;); background-size: 40px 40px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

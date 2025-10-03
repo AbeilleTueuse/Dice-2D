@@ -1,7 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Style.uss?fileID=7433441132597879392&amp;guid=a62267ee241908e4383626990464fb52&amp;type=3#Style" />
     <ui:VisualElement class="menu-root">
-        <ui:VisualElement name="InitView" class="hide" style="opacity: 1;">
+        <ui:VisualElement name="InitView" style="opacity: 1;">
             <ui:Label text="Pseudo" class="menu-label" />
             <ui:TextField name="NameField" class="menu-input" />
             <ui:Button name="ConfirmNameButton" text="Confirmer" class="menu-button" />
@@ -16,7 +16,7 @@
             <ui:ScrollView name="RoomList" class="player-list" />
             <ui:Button text="Retour" name="LeaveRoomListButton" class="menu-button" />
         </ui:VisualElement>
-        <ui:VisualElement name="RoomView">
+        <ui:VisualElement name="RoomView" class="hide">
             <ui:Label text="Nom de la partie" name="RoomName" class="room-title" />
             <ui:ScrollView name="RoomSettings">
                 <ui:SliderInt label="Nombre de dés" value="5" high-value="10" low-value="3" show-input-field="true" direction="Horizontal" inverted="false" name="DiceNumber" fill="true" class="menu-slider" />

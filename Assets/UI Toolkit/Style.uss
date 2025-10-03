@@ -2,10 +2,6 @@
     font-size: 40px;
 }
 
-:root {
-    -unity-font-definition: resource("Fonts/Roboto-Regular");
-}
-
 .menu-root {
     justify-content: center;
     margin: 50px;

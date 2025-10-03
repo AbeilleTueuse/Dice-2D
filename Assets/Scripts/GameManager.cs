@@ -163,8 +163,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (backBtn != null)
             backBtn.clicked += OnBackToMenu;
 
-        if (numPad != null)
-            numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
+        numPad?.RegisterCallback<ClickEvent>(OnNumPadClick);
     }
 
     private void UnregisterButtonCallbacks()
@@ -176,8 +175,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (backBtn != null)
             backBtn.clicked -= OnBackToMenu;
 
-        if (numPad != null)
-            numPad.UnregisterCallback<ClickEvent>(OnNumPadClick);
+        numPad?.UnregisterCallback<ClickEvent>(OnNumPadClick);
     }
 
     private void ShowView(VisualElement targetView)
@@ -202,9 +200,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         // --- Récupérer le nombre de rounds depuis la room si dispo ---
         int configuredRounds = maxRounds; // valeur fallback
-        if (PhotonNetwork.CurrentRoom != null 
-            && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomPropRoundNumber, out object roundVal)
-            && roundVal is int rVal)
+        if (
+            PhotonNetwork.CurrentRoom != null
+            && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(
+                RoomPropRoundNumber,
+                out object roundVal
+            )
+            && roundVal is int rVal
+        )
         {
             configuredRounds = rVal;
         }
@@ -614,19 +617,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (evt.target is not Button button)
             return;
 
-        string buttonText = button.text;
-        if (string.IsNullOrEmpty(buttonText))
-            return;
-
-        if (buttonText == "✖")
+        if (button.name == "ButtonDelete")
         {
             if (!string.IsNullOrEmpty(numberLabel?.text))
-                numberLabel.text = numberLabel.text.Substring(
-                    0,
-                    Mathf.Max(0, numberLabel.text.Length - 1)
-                );
+                numberLabel.text = numberLabel.text[..Mathf.Max(0, numberLabel.text.Length - 1)];
         }
-        else if (buttonText == "✔")
+        else if (button.name == "ButtonValidate")
         {
             if (string.IsNullOrEmpty(numberLabel?.text))
                 return;
@@ -654,7 +650,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         else
         {
             // Append digit and prevent leading zeros
-            var newText = (numberLabel?.text ?? "") + buttonText;
+            var newText = (numberLabel?.text ?? "") + button.text;
             if (int.TryParse(newText, out _))
             {
                 if (newText.Length > 1 && newText.StartsWith("0"))
