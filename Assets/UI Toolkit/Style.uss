@@ -2,6 +2,10 @@
     font-size: 40px;
 }
 
+:root {
+    -unity-font-definition: resource("Fonts/Roboto-Regular");
+}
+
 .menu-root {
     justify-content: center;
     margin: 50px;
@@ -195,7 +199,7 @@
 }
 
 .menu-slider .unity-base-field {
-    width: 90px;
+    width: 100px;
 }
 
 .menu-slider .unity-base-text-field__input {

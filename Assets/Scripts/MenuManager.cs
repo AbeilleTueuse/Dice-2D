@@ -10,6 +10,10 @@ public class MenuManager : MonoBehaviourPunCallbacks
     private const string PlayerNameKey = "PlayerName";
     private const int MaxPlayersPerRoom = 4;
 
+    // clés pour sauvegarde PlayerPrefs
+    private const string DiceNumberPrefKey = "Pref_DiceNumber";
+    private const string RoundNumberPrefKey = "Pref_RoundNumber";
+
     [SerializeField]
     private UIDocument _uiDocument;
 
@@ -29,8 +33,13 @@ public class MenuManager : MonoBehaviourPunCallbacks
     private Label _roomNameLabel;
     private ScrollView _playerList;
     private Button _startGameButton;
-    private SliderInt _diceNumberSlider;
+
+    // Gestion des sliders de paramètres
+    private readonly Dictionary<string, SliderInt> _roomParameters = new();
+
+    // Constantes de clés pour les paramètres Photon
     private const string DiceNumberKey = "DiceNumber";
+    private const string RoundNumberKey = "RoundNumber"; // déjà dans ton UI
 
     private readonly Dictionary<Button, bool> _buttonLocks = new();
 
@@ -49,6 +58,7 @@ public class MenuManager : MonoBehaviourPunCallbacks
         CacheUIElements();
         RegisterButtonCallbacks();
         RestorePlayerNameIfExists();
+        RestoreSlidersDefaults();
         _createRoomButton.SetEnabled(false);
         _joinRoomButton.SetEnabled(false);
     }
@@ -69,7 +79,10 @@ public class MenuManager : MonoBehaviourPunCallbacks
         _roomNameLabel = _roomView.Q<Label>("RoomName");
         _playerList = _roomView.Q<ScrollView>("PlayerList");
         _startGameButton = _roomView.Q<Button>("StartGameButton");
-        _diceNumberSlider = _roomView.Q<SliderInt>("DiceNumber");
+
+        _roomParameters.Clear();
+        _roomParameters[DiceNumberKey] = _roomView.Q<SliderInt>("DiceNumber");
+        _roomParameters[RoundNumberKey] = _roomView.Q<SliderInt>("RoundNumber");
 
         // init locks
         _buttonLocks[_createRoomButton] = false;
@@ -110,6 +123,22 @@ public class MenuManager : MonoBehaviourPunCallbacks
         ShowView(_mainView);
     }
 
+    private void RestoreSlidersDefaults()
+    {
+        // Restaure depuis PlayerPrefs si existants
+        if (_roomParameters.TryGetValue(DiceNumberKey, out var diceSlider))
+        {
+            int saved = PlayerPrefs.GetInt(DiceNumberPrefKey, diceSlider.lowValue);
+            diceSlider.SetValueWithoutNotify(saved);
+        }
+
+        if (_roomParameters.TryGetValue(RoundNumberKey, out var roundSlider))
+        {
+            int saved = PlayerPrefs.GetInt(RoundNumberPrefKey, roundSlider.lowValue);
+            roundSlider.SetValueWithoutNotify(saved);
+        }
+    }
+
     #region Photon Callbacks
 
     public override void OnConnectedToMaster()
@@ -138,7 +167,6 @@ public class MenuManager : MonoBehaviourPunCallbacks
 
             roomButton.AddToClassList("room-button");
 
-            // sécurisation aussi ici
             roomButton.clicked += () =>
                 HandleSafeClick(roomButton, () => PhotonNetwork.JoinRoom(info.Name));
 
@@ -165,23 +193,33 @@ public class MenuManager : MonoBehaviourPunCallbacks
         _startGameButton.SetEnabled(PhotonNetwork.IsMasterClient);
         _buttonLocks[_startGameButton] = false;
 
-        _diceNumberSlider.SetEnabled(PhotonNetwork.IsMasterClient);
+        foreach (var kvp in _roomParameters)
+        {
+            string key = kvp.Key;
+            SliderInt slider = kvp.Value;
 
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(DiceNumberKey, out object value))
-            _diceNumberSlider.SetValueWithoutNotify((int)value);
-        else
-            _diceNumberSlider.SetValueWithoutNotify(3);
+            slider.SetEnabled(PhotonNetwork.IsMasterClient);
 
-        _diceNumberSlider.UnregisterValueChangedCallback(OnDiceNumberChanged);
-        if (PhotonNetwork.IsMasterClient)
-            _diceNumberSlider.RegisterValueChangedCallback(OnDiceNumberChanged);
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(key, out object value))
+                slider.SetValueWithoutNotify((int)value);
+
+            slider.UnregisterValueChangedCallback(evt => OnRoomParameterChanged(key, evt.newValue));
+
+            if (PhotonNetwork.IsMasterClient)
+                slider.RegisterValueChangedCallback(evt => OnRoomParameterChanged(key, evt.newValue));
+        }
     }
 
     public override void OnJoinedRoom()
     {
         ShowView(_roomView);
         UpdateRoomUI();
-        Hashtable props = new() { { DiceNumberKey, _diceNumberSlider.value } };
+
+        // initialise room props avec valeurs actuelles des sliders
+        Hashtable props = new();
+        foreach (var kvp in _roomParameters)
+            props[kvp.Key] = kvp.Value.value;
+
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
 
@@ -195,11 +233,32 @@ public class MenuManager : MonoBehaviourPunCallbacks
     {
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
 
-        if (propertiesThatChanged.ContainsKey(DiceNumberKey) && _diceNumberSlider != null)
+        foreach (var kvp in _roomParameters)
         {
-            int newValue = (int)propertiesThatChanged[DiceNumberKey];
-            _diceNumberSlider.SetValueWithoutNotify(newValue);
+            string key = kvp.Key;
+            if (propertiesThatChanged.ContainsKey(key))
+            {
+                int newValue = (int)propertiesThatChanged[key];
+                kvp.Value.SetValueWithoutNotify(newValue);
+
+                // Sauvegarde dans PlayerPrefs quand un param change
+                if (key == DiceNumberKey)
+                    PlayerPrefs.SetInt(DiceNumberPrefKey, newValue);
+                else if (key == RoundNumberKey)
+                    PlayerPrefs.SetInt(RoundNumberPrefKey, newValue);
+
+                PlayerPrefs.Save();
+            }
         }
+    }
+
+    private void OnRoomParameterChanged(string key, int newValue)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        Hashtable props = new() { { key, newValue } };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
 
     #endregion
@@ -270,19 +329,6 @@ public class MenuManager : MonoBehaviourPunCallbacks
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
-    }
-
-    #endregion
-
-    #region DiceNumber Logic
-
-    private void OnDiceNumberChanged(ChangeEvent<int> evt)
-    {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-
-        Hashtable props = new() { { DiceNumberKey, evt.newValue } };
-        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
 
     #endregion

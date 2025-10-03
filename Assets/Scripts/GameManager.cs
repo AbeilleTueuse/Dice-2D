@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     // ----- Constants -----
     private const string RoomPropAnsweredCount = "AnsweredCount";
     private const string RoomPropDiceNumber = "DiceNumber";
+    private const string RoomPropRoundNumber = "RoundNumber";
     private const string UiClassHidden = "hide";
     private const string UiClassPop = "countdown-animate";
 
@@ -69,7 +70,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private int currentRound = 0;
 
     [SerializeField]
-    private int maxRounds = 10;
+    private int maxRounds = 10; // Valeur par défaut si pas dans les props
 
     private Coroutine roundCoroutine;
     private bool hasAnswered;
@@ -198,6 +199,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         StopRoundCoroutineIfRunning();
+
+        // --- Récupérer le nombre de rounds depuis la room si dispo ---
+        int configuredRounds = maxRounds; // valeur fallback
+        if (PhotonNetwork.CurrentRoom != null 
+            && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomPropRoundNumber, out object roundVal)
+            && roundVal is int rVal)
+        {
+            configuredRounds = rVal;
+        }
+
+        maxRounds = configuredRounds; // on remplace la valeur locale par celle de la room
 
         currentRound++;
         if (currentRound > maxRounds)
