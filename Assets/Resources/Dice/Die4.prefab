@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5211875743993768074}
   - component: {fileID: 6673594824282209477}
   - component: {fileID: 1457310829408210103}
+  - component: {fileID: 1962789434959885779}
   m_Layer: 0
   m_Name: Die4
   m_TagString: Untagged
@@ -113,3 +114,15 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1962789434959885779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5274131867878456392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a6b1f25b4a98247b219720ce24f8ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DieSpawnNotifier

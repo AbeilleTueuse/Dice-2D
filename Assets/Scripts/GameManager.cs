@@ -25,9 +25,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField, Min(1)]
     private int defaultDiceCount = 5;
 
-    [SerializeField, Min(1f)]
-    private float roundDuration = 30f;
-
     [SerializeField, Min(1)]
     private int countdownFrom = 5;
 
@@ -75,6 +72,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private Coroutine roundCoroutine;
     private bool hasAnswered;
     private float roundStartTime;
+    private bool roundStarted = false;
 
     // Prebuilt WaitForSeconds to avoid allocations each frame
     private static readonly WaitForSeconds Wait1 = new(1f);
@@ -107,6 +105,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             Debug.LogWarning("Dice list empty — ensure DieSO assets are assigned", this);
         if (circle == null)
             Debug.LogError("Circle reference missing", this);
+
+        DieSpawnNotifier.OnFirstDieSpawned += HandleFirstDieSpawned;
     }
 
     public override void OnEnable()
@@ -259,6 +259,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private IEnumerator RoundRoutine()
     {
+        ClearDice();
+
+        if (numberLabel != null)
+            numberLabel.text = "";
+
         // Reset per-round master state
         if (PhotonNetwork.IsMasterClient)
         {
@@ -300,17 +305,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("Round started!");
         StartRound();
 
-        float elapsed = 0f;
-        while (elapsed < roundDuration)
+        while (true)
         {
             if (AllPlayersAnswered())
             {
                 Debug.Log("All players answered, ending round early.");
                 break; // On sort de la boucle, EndRound sera appelé après
             }
-
             yield return null;
-            elapsed += Time.deltaTime;
         }
 
         Debug.Log("Round ended!");
@@ -320,11 +322,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void StartRound()
     {
         // Common per-client setup
-        if (numberLabel != null)
-            numberLabel.text = "";
         hasAnswered = false;
         SetNumPadEnabled(true);
-        roundStartTime = Time.time;
 
         // Only Master spawns dice & decides the correct combination
         if (!PhotonNetwork.IsMasterClient)
@@ -369,6 +368,15 @@ public class GameManager : MonoBehaviourPunCallbacks
             usedPositions.Add(spawnPos);
             currentDiceValues.Add(dieSO.Value);
         }
+    }
+
+    private void HandleFirstDieSpawned()
+    {
+        if (roundStarted)
+            return;
+
+        roundStarted = true;
+        roundStartTime = Time.time;
     }
 
     private IEnumerator ShowResultsCoroutine()
@@ -463,21 +471,25 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void EndRound()
     {
+        roundStarted = false;
+
         if (PhotonNetwork.IsMasterClient)
         {
-            // Master envoie tous les résultats aux clients
-            foreach (var r in results)
-            {
-                photonView.RPC(
-                    nameof(RPC_AddResult),
-                    RpcTarget.Others,
-                    r.ActorNumber,
-                    r.IsCorrect,
-                    r.ResponseTime
-                );
-            }
+            // Prépare les données à envoyer
+            var actorNumbers = results.Select(r => r.ActorNumber).ToArray();
+            var isCorrect = results.Select(r => r.IsCorrect ? 1 : 0).ToArray();
+            var responseTimes = results.Select(r => r.ResponseTime).ToArray();
 
-            // Puis annonce le winner
+            // Envoie à tout le monde (y compris Master pour uniformiser l’affichage)
+            photonView.RPC(
+                nameof(RPC_ShowResults),
+                RpcTarget.All,
+                actorNumbers,
+                isCorrect,
+                responseTimes
+            );
+
+            // Envoie le winner (optionnel, tu peux aussi l’inclure dans le RPC_ShowResults si tu veux)
             var winner = ComputeWinner();
             if (winner != null)
             {
@@ -496,8 +508,28 @@ public class GameManager : MonoBehaviourPunCallbacks
                 photonView.RPC(nameof(RPC_NoWinner), RpcTarget.All);
             }
         }
+    }
 
-        ClearDice();
+    [PunRPC]
+    private void RPC_ShowResults(int[] actorNumbers, int[] isCorrect, float[] responseTimes)
+    {
+        // Réinitialise les résultats locaux
+        results.Clear();
+
+        // Reconstruit la liste à partir des données envoyées
+        for (int i = 0; i < actorNumbers.Length; i++)
+        {
+            results.Add(
+                new PlayerResult
+                {
+                    ActorNumber = actorNumbers[i],
+                    IsCorrect = isCorrect[i] != 0,
+                    ResponseTime = responseTimes[i],
+                }
+            );
+        }
+
+        // Lance l’affichage pour ce client
         StartCoroutine(ShowResultsCoroutine());
     }
 
