@@ -23,6 +23,7 @@ public class RoundManager : MonoBehaviourPun
     public bool IsLastRound => CurrentRound >= MaxRounds;
     private readonly List<GameObject> spawnedDice = new();
     public List<int> CurrentDiceValues { get; private set; } = new();
+    public int CurrentCorrectAnswer => CurrentDiceValues.Aggregate(1, (a, b) => a * b);
     private Coroutine roundCoroutine;
 
     private void OnEnable()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
@@ -88,9 +89,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient)
             return;
 
-        var diceValues = GameManager.Instance.Rounds.CurrentDiceValues;
-        int product = diceValues.Aggregate(1, (a, b) => a * b);
-        bool isCorrect = playerAnswer == product;
+        bool isCorrect = playerAnswer == GameManager.Instance.Rounds.CurrentCorrectAnswer;
         string playerName =
             PhotonNetwork.CurrentRoom.GetPlayer(actorNumber)?.NickName ?? $"Joueur {actorNumber}";
 
@@ -99,7 +98,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         );
 
         roundResults.Add(
-            new PlayerResult(playerName, playerAnswer, actorNumber, isCorrect, responseTime)
+            new PlayerResult(
+                playerName,
+                playerAnswer,
+                actorNumber,
+                isCorrect,
+                (float)Math.Round(responseTime, 1)
+            )
         );
     }
 
@@ -141,6 +146,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     #region --- Fin de round et résultats ---
 
+    private void AssignRanksWithTies(List<PlayerResult> results)
+    {
+        if (results.Count == 0)
+            return;
+
+        results[0].Rank = 1;
+
+        for (int i = 1; i < results.Count; i++)
+        {
+            var prev = results[i - 1];
+            var curr = results[i];
+
+            bool equal =
+                curr.IsCorrect == prev.IsCorrect
+                && Mathf.Approximately(curr.ResponseTime, prev.ResponseTime);
+
+            curr.Rank = equal ? prev.Rank : i + 1;
+        }
+    }
+
     public void EndRound()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -152,12 +177,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             .ThenBy(r => r.ResponseTime)
             .ToList();
 
+        AssignRanksWithTies(roundResults);
+
         // Prépare les tableaux à envoyer
         var playerNames = roundResults.Select(r => r.PlayerName).ToArray();
         var answers = roundResults.Select(r => r.Answer).ToArray();
         var actors = roundResults.Select(r => r.ActorNumber).ToArray();
         var corrects = roundResults.Select(r => r.IsCorrect ? 1 : 0).ToArray();
         var times = roundResults.Select(r => r.ResponseTime).ToArray();
+        var ranks = roundResults.Select(r => r.Rank).ToArray();
 
         photonView.RPC(
             nameof(RPC_ShowResults),
@@ -166,7 +194,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             answers,
             actors,
             corrects,
-            times
+            times,
+            ranks
         );
     }
 
@@ -176,7 +205,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int[] answers,
         int[] actorNumbers,
         int[] isCorrect,
-        float[] responseTimes
+        float[] responseTimes,
+        int[] ranks
     )
     {
         roundResults.Clear();
@@ -187,7 +217,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                     answers[i],
                     actorNumbers[i],
                     isCorrect[i] != 0,
-                    responseTimes[i]
+                    responseTimes[i],
+                    ranks[i]
                 )
             );
 

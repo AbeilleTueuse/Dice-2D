@@ -252,12 +252,52 @@
     margin-left: 0;
 }
 
+.quit {
+    background-color: rgba(139, 0, 0, 0.5);
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    height: 80px;
+    width: 80px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    width: auto;
+    height: auto;
+}
+
+.quit:hover {
+    background-color: rgba(178, 34, 34, 0.7);
+    scale: 1.05;
+}
+
+.quit:active {
+    background-color: rgba(92, 0, 0, 0.9);
+    scale: 0.97;
+}
+
+.quit-label {
+    padding: 0;
+    margin: 0;
+    height: 80px;
+    width: 80px;
+}
+
 .countdown-label {
     -unity-text-align: middle-center;
     -unity-font-style: bold;
     font-size: 120px;
     color: rgb(255, 255, 255);
     text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+}
+
+.round-info {
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    font-size: 120px;
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+    font-size: 80px;
 }
 
 .results-content {
@@ -295,6 +335,10 @@
 
 .results-item {
     padding: 0 20px 20px 20px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(68, 68, 68);
 }
 
 #LeaderboardTitle {
@@ -324,4 +368,76 @@
 
 .hide {
     display: none;
+}
+
+.unity-tab-view {
+    flex-grow: 1;
+    background-color: transparent;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(68, 68, 68);
+    flex-direction: column;
+}
+
+.unity-tab-view__content-viewport {
+    background-color: rgb(42, 42, 42);
+    border-bottom-width: 3px;
+    border-color: rgb(68, 68, 68);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+.unity-tab-view__header-container {
+}
+
+.unity-tab__header {
+    background-color: rgb(42, 42, 42);
+    color: white;
+    border-radius: 12px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    padding: 12px 24px;
+    margin: 0 5px;
+    transition: background-color 0.15s ease, scale 0.15s ease, color 0.15s ease;
+    font-size: 32px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 50px;
+}
+
+.unity-tab__header:hover {
+    background-color: rgb(61, 61, 61);
+    scale: 1.05;
+}
+
+.unity-tab__header:checked {
+    background-color: rgb(255, 204, 0);
+    color: black;
+    border-color: rgb(255, 204, 0);
+    scale: 1.05;
+}
+
+.unity-tab__header.is-checked {
+    background-color: rgb(255, 204, 0);
+    color: black;
+    border-color: rgb(255, 204, 0);
+    scale: 1.05;
+}
+
+.unity-tab__header:active {
+    background-color: rgb(255, 204, 0);
+    color: black;
+    border-color: rgb(255, 204, 0);
+    scale: 1.05;
+}
+
+.unity-tab__header.unity-toggle--checked {
+    background-color: rgb(255, 204, 0);
+    color: black;
+    border-color: rgb(255, 204, 0);
+    scale: 1.05;
 }

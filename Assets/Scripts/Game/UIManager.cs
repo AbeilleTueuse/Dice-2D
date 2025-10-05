@@ -17,14 +17,19 @@ public class UIManager : MonoBehaviour
     private VisualElement root;
     private VisualElement countdownView;
     private Label countdownLabel;
+    private Label roundInfo;
     private VisualElement numPad;
     private Label numberLabel;
     private VisualElement resultsView;
+    private VisualElement resultsRound;
+    private Button quitResultsButton;
     private Button initReady;
     private Label initReadyCount;
     private Button readyButton;
     private Label readyCount;
     private ListView roundResultsTable;
+    private Button showResults;
+    private Label correctAnswerLabel;
     private List<PlayerResult> roundResults = new();
 
     private void OnEnable()
@@ -32,18 +37,25 @@ public class UIManager : MonoBehaviour
         root = uiDocument.rootVisualElement;
         countdownView = root.Q<VisualElement>("CountdownView");
         countdownLabel = root.Q<Label>("CountdownLabel");
+        roundInfo = root.Q<Label>("RoundInfo");
         numPad = root.Q<VisualElement>("NumPad");
         numberLabel = root.Q<Label>("NumberLabel");
         resultsView = root.Q<VisualElement>("ResultsView");
+        resultsRound = root.Q<VisualElement>("ResultsRound");
+        quitResultsButton = root.Q<Button>("QuitResultsButton");
         initReady = root.Q<Button>("InitReadyButton");
         initReadyCount = root.Q<Label>("InitReadyCount");
         readyButton = root.Q<Button>("ReadyButton");
         readyCount = root.Q<Label>("ReadyCount");
+        showResults = root.Q<Button>("ShowResults");
+        correctAnswerLabel = root.Q<Label>("CorrectAnswerLabel");
         roundResultsTable = root.Q<ListView>("RoundResultsTable");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
         readyButton.clicked += OnReadyButtonClick;
+        showResults.clicked += OnShowResultsClick;
+        quitResultsButton.clicked += OnQuitResultsClick;
         root.Q<Button>("BackToMenuButton").clicked += () => GameManager.Instance.EndGame();
         InitializeResultsTable();
     }
@@ -61,14 +73,26 @@ public class UIManager : MonoBehaviour
         photonView.RPC(nameof(NetworkManager.RPC_PlayerReady), RpcTarget.MasterClient);
     }
 
+    private void OnShowResultsClick()
+    {
+        showResults.AddToClassList("hide");
+        resultsRound.RemoveFromClassList("hide");
+    }
+
+    private void OnQuitResultsClick()
+    {
+        showResults.RemoveFromClassList("hide");
+        resultsRound.AddToClassList("hide");
+    }
+
     private string IndexToRank(int index)
     {
         string rank = index switch
         {
-            0 => "🥇",
-            1 => "🥈",
-            2 => "🥉",
-            _ => $"{index + 1}e",
+            1 => "🥇",
+            2 => "🥈",
+            3 => "🥉",
+            _ => $"{index}e",
         };
         return rank;
     }
@@ -109,13 +133,26 @@ public class UIManager : MonoBehaviour
             var r = roundResults[i];
             var formattedAnswer = r.Answer.ToString("N0", GameManager.Instance.GameCulture);
 
-            top.text = $"{IndexToRank(i)}  {r.PlayerName}";
+            top.text = $"{IndexToRank(r.Rank)}  {r.PlayerName}";
             bottom.text = $"Réponse : {formattedAnswer} en {r.ResponseTime:F1} s";
 
             // Couleur de fond selon la correction
             element.style.backgroundColor = r.IsCorrect
                 ? new Color(0.2f, 0.6f, 0.2f, 0.25f)
                 : new Color(0.6f, 0.2f, 0.2f, 0.25f);
+
+            element.style.borderTopColor = r.IsCorrect
+                ? new Color(0.2f, 0.6f, 0.2f, 0.75f)
+                : new Color(0.6f, 0.2f, 0.2f, 0.75f);
+            element.style.borderBottomColor = r.IsCorrect
+                ? new Color(0.2f, 0.6f, 0.2f, 0.75f)
+                : new Color(0.6f, 0.2f, 0.2f, 0.75f);
+            element.style.borderLeftColor = r.IsCorrect
+                ? new Color(0.2f, 0.6f, 0.8f, 0.75f)
+                : new Color(0.6f, 0.2f, 0.8f, 0.75f);
+            element.style.borderRightColor = r.IsCorrect
+                ? new Color(0.2f, 0.6f, 0.8f, 0.75f)
+                : new Color(0.6f, 0.2f, 0.8f, 0.75f);
         };
     }
 
@@ -123,6 +160,9 @@ public class UIManager : MonoBehaviour
     {
         countdownView.RemoveFromClassList("hide");
         countdownLabel.RemoveFromClassList("hide");
+        roundInfo.text =
+            $"Manche {GameManager.Instance.Rounds.CurrentRound} / {GameManager.Instance.Rounds.MaxRounds}";
+        roundInfo.RemoveFromClassList("hide");
         initReady.AddToClassList("hide");
         initReadyCount.AddToClassList("hide");
         for (int i = from; i > 0; i--)
@@ -239,6 +279,11 @@ public class UIManager : MonoBehaviour
     {
         numPad.AddToClassList("hide");
         resultsView.RemoveFromClassList("hide");
+        resultsRound.RemoveFromClassList("hide");
+        showResults.AddToClassList("hide");
+        var culture = GameManager.Instance.GameCulture;
+        correctAnswerLabel.text =
+            $"La bonne réponse était {GameManager.Instance.Rounds.CurrentCorrectAnswer.ToString("N0", culture)}.";
 
         if (GameManager.Instance.Rounds.IsLastRound)
         {
@@ -259,5 +304,6 @@ public class UIManager : MonoBehaviour
         initReady.RemoveFromClassList("hide");
         initReadyCount.RemoveFromClassList("hide");
         countdownLabel.AddToClassList("hide");
+        roundInfo.AddToClassList("hide");
     }
 }
