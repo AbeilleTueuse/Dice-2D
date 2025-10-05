@@ -1,3 +1,4 @@
+using System.Globalization;
 using Photon.Pun;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public RoundManager Rounds { get; private set; }
     public UIManager UI { get; private set; }
     public NetworkManager Net { get; private set; }
+    public CultureInfo GameCulture { get; private set; } = new("fr-FR");
 
     private void Awake()
     {

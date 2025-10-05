@@ -44,9 +44,7 @@
             <ui:VisualElement name="ResultsRound" class="results-round">
                 <ui:TabView style="width: 100%;">
                     <ui:Tab label="Round" name="Tab">
-                        <ui:MultiColumnListView name="RoundResultsTable" virtualization-method="DynamicHeight" show-foldout-header="false" show-add-remove-footer="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" fixed-item-height="22">
-                            <ui:Columns />
-                        </ui:MultiColumnListView>
+                        <ui:ListView virtualization-method="DynamicHeight" name="RoundResultsTable" />
                     </ui:Tab>
                     <ui:Tab label="Global" name="Tab">
                         <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
