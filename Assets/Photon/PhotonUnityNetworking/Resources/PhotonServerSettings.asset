@@ -45,6 +45,11 @@ MonoBehaviour:
   - RPC_NoWinner
   - RPC_SendResultToMaster
   - RPC_AddResult
+  - RPC_ShowResults
+  - RPC_SendAnswer
+  - RPC_SendAnswerToMaster
+  - RPC_PlayerReady
+  - UpdateReadyCountLabel
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

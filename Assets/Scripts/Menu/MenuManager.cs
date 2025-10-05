@@ -206,7 +206,9 @@ public class MenuManager : MonoBehaviourPunCallbacks
             slider.UnregisterValueChangedCallback(evt => OnRoomParameterChanged(key, evt.newValue));
 
             if (PhotonNetwork.IsMasterClient)
-                slider.RegisterValueChangedCallback(evt => OnRoomParameterChanged(key, evt.newValue));
+                slider.RegisterValueChangedCallback(evt =>
+                    OnRoomParameterChanged(key, evt.newValue)
+                );
         }
     }
 

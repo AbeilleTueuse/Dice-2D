@@ -30,11 +30,16 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:Label name="CountdownLabel" class="countdown-label" />
-    <ui:VisualElement name="ResultsPanel" class="hide">
-        <ui:Label name="ResultsTitle" text="Résultats du round" class="results-title" />
-        <ui:VisualElement name="RoundResults" />
-        <ui:Label name="LeaderboardTitle" text="Classement global" class="results-title" />
-        <ui:VisualElement name="GlobalLeaderboard" />
+    <ui:Label name="CountdownLabel" class="countdown-label hide" />
+    <ui:VisualElement name="ResultsView" class="hide" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(233, 118, 118, 0.16);">
+        <ui:VisualElement name="ResultsContent" class="results-content" style="flex-grow: 1; align-self: center; width: 100%; justify-content: flex-end;">
+            <ui:VisualElement name="ResultsRound" class="results-round">
+                <ui:Label name="ResultsTitle" text="Résultats du round" class="results-title" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row;">
+                <ui:Button text="Prêt" name="ReadyButton" class="menu-button" style="flex-grow: 1;" />
+                <ui:Label text="0/4" name="ReadyCount" class="ready-count-label" style="-unity-text-align: middle-center; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 20px; padding-bottom: 0; padding-left: 20px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

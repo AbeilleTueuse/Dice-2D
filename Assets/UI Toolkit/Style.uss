@@ -61,7 +61,11 @@
     margin-bottom: 30px;
 }
 
-.player-button,
+.player-button {
+    background-color: transparent;
+    color: white;
+}
+
 .room-button {
     background-color: transparent;
     color: white;
@@ -121,42 +125,44 @@
     padding-right: 50px;
 }
 
-/* Boutons numériques */
 .numpad-button.number {
-    background-color: #2A2A2A;
+    background-color: rgb(42, 42, 42);
     color: white;
 }
+
 .numpad-button.number:hover {
-    background-color: #3D3D3D;
+    background-color: rgb(61, 61, 61);
 }
+
 .numpad-button.number:active {
-    background-color: #1E1E1E;
+    background-color: rgb(30, 30, 30);
 }
 
-/* Bouton effacer (X) */
 .numpad-button.clear {
-    background-color: #8B0000;
+    background-color: rgb(139, 0, 0);
     color: white;
 }
+
 .numpad-button.clear:hover {
-    background-color: #B22222;
-}
-.numpad-button.clear:active {
-    background-color: #5C0000;
+    background-color: rgb(178, 34, 34);
 }
 
-/* Bouton valider (V) */
+.numpad-button.clear:active {
+    background-color: rgb(92, 0, 0);
+}
+
 .numpad-button.validate {
-    background-color: #228B22;
+    background-color: rgb(34, 139, 34);
     color: white;
 }
+
 .numpad-button.validate:hover {
-    background-color: #32CD32;
-}
-.numpad-button.validate:active {
-    background-color: #006400;
+    background-color: rgb(50, 205, 50);
 }
 
+.numpad-button.validate:active {
+    background-color: rgb(0, 100, 0);
+}
 
 #RoomSettings {
     margin: 20px 0;
@@ -206,12 +212,14 @@
     border-color: rgb(85, 85, 85);
 }
 
-.unity-slider-int__label {
+.unity-slider-int__label,
+.ready-count-label {
     background-color: rgb(42, 42, 42);
     padding: 20px;
     border-radius: 16px;
     border-width: 3px;
     border-color: rgb(85, 85, 85);
+    color: white;
 }
 
 .menu-slider .unity-text-element {
@@ -241,14 +249,11 @@
     margin-left: 0;
 }
 
-/* Panel global des résultats */
-#ResultsPanel {
-    position: absolute;
-    translate: -50% -50%;
-    top: 20%;
-    left: 50%;
-    width: 90%;
-    max-width: 800px;
+.results-content {
+    max-width: 1080px;
+}
+
+.results-round {
     background-color: rgba(42, 42, 42, 0.95);
     border-radius: 16px;
     border-width: 3px;
@@ -262,12 +267,6 @@
     color: white;
 }
 
-/* Masque par défaut */
-.hide {
-    display: none;
-}
-
-/* Titre général */
 .results-title {
     font-size: 60px;
     -unity-font-style: bold;
@@ -276,7 +275,6 @@
     -unity-text-align: middle-center;
 }
 
-/* Labels des résultats du round */
 .results-round-label {
     font-size: 40px;
     color: white;
@@ -284,7 +282,6 @@
     -unity-text-align: middle-center;
 }
 
-/* Global leaderboard */
 #LeaderboardTitle {
     font-size: 50px;
     -unity-font-style: bold;
@@ -301,7 +298,6 @@
     -unity-text-align: middle-center;
 }
 
-/* Option : petite animation d'apparition */
 .results-label-animate {
     transition: all 0.3s ease;
     opacity: 0;
@@ -309,4 +305,8 @@
 
 .results-label-animate.show {
     opacity: 1;
+}
+
+.hide {
+    display: none;
 }

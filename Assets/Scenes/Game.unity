@@ -130,6 +130,9 @@ GameObject:
   - component: {fileID: 1084455919}
   - component: {fileID: 1084455920}
   - component: {fileID: 1084455921}
+  - component: {fileID: 1084455924}
+  - component: {fileID: 1084455923}
+  - component: {fileID: 1084455922}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -164,24 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3855d061393d5624ca3abd22b585fce8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  uiDocument: {fileID: 1179557562}
-  dice:
-  - {fileID: 11400000, guid: 1c495d1241bc1df42b584025c2c749d9, type: 2}
-  - {fileID: 11400000, guid: 1155a90fcdb799642b299474dc373953, type: 2}
-  - {fileID: 11400000, guid: ade96668d3985e2489278f5297e9ed2c, type: 2}
-  - {fileID: 11400000, guid: d78b1554733363b46880ac5dabd6c9dc, type: 2}
-  - {fileID: 11400000, guid: 74ab5179059432f49878dff2648bde32, type: 2}
-  - {fileID: 11400000, guid: 8644212365187c44693f579be2b9db01, type: 2}
-  circle: {fileID: 1995938988}
-  defaultDiceCount: 5
-  roundDuration: 30
-  countdownFrom: 5
-  interStepDelay: 1
-  restartDelay: 3
-  spawnRadius: 2
-  minSpawnDistance: 1
-  maxSpawnAttempts: 100
-  maxRounds: 2
+  maxRounds: 10
 --- !u!114 &1084455921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +190,54 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1084455922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084455918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51456b553b8b8d446ab2a5f69d67e292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  uiDocument: {fileID: 1179557562}
+--- !u!114 &1084455923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084455918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da1f5ad4da66001439b70da2d66b3e20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundManager
+  dice:
+  - {fileID: 11400000, guid: 1c495d1241bc1df42b584025c2c749d9, type: 2}
+  - {fileID: 11400000, guid: 1155a90fcdb799642b299474dc373953, type: 2}
+  - {fileID: 11400000, guid: ade96668d3985e2489278f5297e9ed2c, type: 2}
+  - {fileID: 11400000, guid: d78b1554733363b46880ac5dabd6c9dc, type: 2}
+  - {fileID: 11400000, guid: 74ab5179059432f49878dff2648bde32, type: 2}
+  - {fileID: 11400000, guid: 8644212365187c44693f579be2b9db01, type: 2}
+  circle: {fileID: 1995938988}
+  defaultDiceCount: 5
+  countdownFrom: 5
+  interStepDelay: 1
+--- !u!114 &1084455924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084455918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10488b10e80baa4bb4628ed69a7972c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkManager
 --- !u!1 &1179557561
 GameObject:
   m_ObjectHideFlags: 0
