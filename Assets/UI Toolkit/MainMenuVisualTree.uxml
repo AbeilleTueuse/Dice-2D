@@ -3,7 +3,7 @@
     <ui:VisualElement class="menu-root">
         <ui:VisualElement name="InitView" style="opacity: 1;">
             <ui:Label text="Pseudo" class="menu-label" />
-            <ui:TextField name="NameField" class="menu-input" />
+            <ui:TextField name="NameField" max-length="12" class="menu-input" />
             <ui:Button name="ConfirmNameButton" text="Confirmer" class="menu-button" />
         </ui:VisualElement>
         <ui:VisualElement name="MainView" class="hide">

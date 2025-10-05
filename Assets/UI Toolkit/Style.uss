@@ -212,7 +212,15 @@
     border-color: rgb(85, 85, 85);
 }
 
-.unity-slider-int__label,
+.unity-slider-int__label {
+    background-color: rgb(42, 42, 42);
+    padding: 20px;
+    border-radius: 16px;
+    border-width: 3px;
+    border-color: rgb(85, 85, 85);
+    color: white;
+}
+
 .ready-count-label {
     background-color: rgb(42, 42, 42);
     padding: 20px;
@@ -227,12 +235,7 @@
     -unity-text-align: middle-center;
 }
 
-.countdown-label {
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    font-size: 120px;
-    color: rgb(255, 255, 255);
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+.countdown {
     position: absolute;
     bottom: 0;
     top: 0;
@@ -247,6 +250,14 @@
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
+}
+
+.countdown-label {
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    font-size: 120px;
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
 }
 
 .results-content {

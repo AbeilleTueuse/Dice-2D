@@ -50,6 +50,7 @@ MonoBehaviour:
   - RPC_SendAnswerToMaster
   - RPC_PlayerReady
   - UpdateReadyCountLabel
+  - RPC_StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -30,15 +30,35 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:Label name="CountdownLabel" class="countdown-label hide" />
-    <ui:VisualElement name="ResultsView" class="hide" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(233, 118, 118, 0.16);">
+    <ui:VisualElement name="CountdownView" class="countdown" style="flex-grow: 1;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; justify-content: center; max-width: 1080px; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; margin-top: auto; margin-right: auto; margin-bottom: auto; margin-left: auto; flex-shrink: 1; width: 100%;">
+            <ui:VisualElement name="VisualElement" style="flex-direction: column;">
+                <ui:Button text="Prêt" name="InitReadyButton" class="menu-button" style="flex-grow: 1; width: 100%;" />
+                <ui:Label name="InitReadyCount" class="ready-count-label" style="align-self: center;" />
+            </ui:VisualElement>
+            <ui:Label name="CountdownLabel" class="countdown-label" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="ResultsView" class="hide" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(118, 162, 233, 0.2);">
         <ui:VisualElement name="ResultsContent" class="results-content" style="flex-grow: 1; align-self: center; width: 100%; justify-content: flex-end;">
             <ui:VisualElement name="ResultsRound" class="results-round">
-                <ui:Label name="ResultsTitle" text="Résultats du round" class="results-title" />
+                <ui:TabView style="width: 100%;">
+                    <ui:Tab label="Round" name="Tab">
+                        <ui:MultiColumnListView name="RoundResultsTable" virtualization-method="DynamicHeight" show-foldout-header="false" show-add-remove-footer="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" fixed-item-height="22">
+                            <ui:Columns />
+                        </ui:MultiColumnListView>
+                    </ui:Tab>
+                    <ui:Tab label="Global" name="Tab">
+                        <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
+                            <ui:Label text="test" />
+                        </ui:VisualElement>
+                        <ui:MultiColumnListView virtualization-method="DynamicHeight" show-border="true" show-foldout-header="false" show-add-remove-footer="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" />
+                    </ui:Tab>
+                </ui:TabView>
             </ui:VisualElement>
             <ui:VisualElement name="VisualElement" style="flex-direction: row;">
                 <ui:Button text="Prêt" name="ReadyButton" class="menu-button" style="flex-grow: 1;" />
-                <ui:Label text="0/4" name="ReadyCount" class="ready-count-label" style="-unity-text-align: middle-center; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 20px; padding-bottom: 0; padding-left: 20px;" />
+                <ui:Label text="0/4" name="ReadyCount" class="ready-count-label" style="-unity-text-align: middle-center; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 20px; padding-bottom: 0; padding-left: 20px;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

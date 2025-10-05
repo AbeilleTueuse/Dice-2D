@@ -12,41 +12,134 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private UIDocument uiDocument;
     private VisualElement root;
+    private VisualElement countdownView;
     private Label countdownLabel;
     private VisualElement numPad;
     private Label numberLabel;
     private VisualElement resultsView;
+    private Button initReady;
+    private Label initReadyCount;
     private Button readyButton;
     private Label readyCount;
+    private MultiColumnListView roundResultsTable;
+    private List<PlayerResult> roundResults = new();
 
-    private void Awake()
+    private void OnEnable()
     {
         root = uiDocument.rootVisualElement;
+        countdownView = root.Q<VisualElement>("CountdownView");
         countdownLabel = root.Q<Label>("CountdownLabel");
         numPad = root.Q<VisualElement>("NumPad");
         numberLabel = root.Q<Label>("NumberLabel");
         resultsView = root.Q<VisualElement>("ResultsView");
+        initReady = root.Q<Button>("InitReadyButton");
+        initReadyCount = root.Q<Label>("InitReadyCount");
         readyButton = root.Q<Button>("ReadyButton");
         readyCount = root.Q<Label>("ReadyCount");
+        roundResultsTable = root.Q<MultiColumnListView>("RoundResultsTable");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
-        readyButton.clicked += () =>
-        {
-            if (GameManager.Instance.Rounds.IsLastRound)
-            {
-                GameManager.Instance.EndGame();
-                return;
-            }
-            readyButton.SetEnabled(false);
-            PhotonView photonView = PhotonView.Get(GameManager.Instance.Net);
-            photonView.RPC(nameof(NetworkManager.RPC_PlayerReady), RpcTarget.MasterClient);
-        };
+        initReady.clicked += OnReadyButtonClick;
+        readyButton.clicked += OnReadyButtonClick;
         root.Q<Button>("BackToMenuButton").clicked += () => GameManager.Instance.EndGame();
+        InitializeResultsTable();
+    }
+
+    private void OnReadyButtonClick()
+    {
+        if (GameManager.Instance.Rounds.IsLastRound)
+        {
+            GameManager.Instance.EndGame();
+            return;
+        }
+        readyButton.SetEnabled(false);
+        initReady.SetEnabled(false);
+        PhotonView photonView = PhotonView.Get(GameManager.Instance.Net);
+        photonView.RPC(nameof(NetworkManager.RPC_PlayerReady), RpcTarget.MasterClient);
+    }
+
+    private string IndexToRank(int index)
+    {
+        string rank = index switch
+        {
+            0 => "🥇",
+            1 => "🥈",
+            2 => "🥉",
+            _ => $"{index + 1}e",
+        };
+        return rank;
+    }
+
+    public void InitializeResultsTable()
+    {
+        roundResultsTable = root.Q<MultiColumnListView>("RoundResultsTable");
+
+        roundResultsTable.columns.Add(
+            new Column
+            {
+                title = "Rang",
+                makeCell = () => new Label(),
+                bindCell = (element, i) =>
+                {
+                    ((Label)element).text = IndexToRank(i);
+                    var row = element.parent?.parent;
+                    if (row != null)
+                    {
+                        row.style.backgroundColor = roundResults[i].IsCorrect
+                            ? new Color(0.2f, 0.6f, 0.2f, 0.3f)
+                            : new Color(0.6f, 0.2f, 0.2f, 0.3f);
+                    }
+                },
+                width = new Length(25, LengthUnit.Percent),
+            }
+        );
+
+        roundResultsTable.columns.Add(
+            new Column
+            {
+                title = "Joueur",
+                makeCell = () => new Label(),
+                bindCell = (element, i) =>
+                {
+                    ((Label)element).text = roundResults[i].PlayerName;
+                },
+                width = new Length(25, LengthUnit.Percent),
+            }
+        );
+
+        roundResultsTable.columns.Add(
+            new Column
+            {
+                title = "Réponse",
+                makeCell = () => new Label(),
+                bindCell = (element, i) =>
+                {
+                    ((Label)element).text = roundResults[i].Answer.ToString();
+                },
+                width = new Length(25, LengthUnit.Percent),
+            }
+        );
+
+        roundResultsTable.columns.Add(
+            new Column
+            {
+                title = "Temps",
+                makeCell = () => new Label(),
+                bindCell = (element, i) =>
+                {
+                    ((Label)element).text = $"{roundResults[i].ResponseTime:F1}s";
+                },
+                width = new Length(25, LengthUnit.Percent),
+            }
+        );
     }
 
     public IEnumerator ShowCountdown(int from)
     {
+        countdownView.RemoveFromClassList("hide");
         countdownLabel.RemoveFromClassList("hide");
+        initReady.AddToClassList("hide");
+        initReadyCount.AddToClassList("hide");
         for (int i = from; i > 0; i--)
         {
             countdownLabel.text = i.ToString();
@@ -54,7 +147,7 @@ public class UIManager : MonoBehaviour
         }
         countdownLabel.text = "GO!";
         yield return _waitForSeconds1;
-        countdownLabel.AddToClassList("hide");
+        countdownView.AddToClassList("hide");
     }
 
     private void OnNumPadClick(ClickEvent evt)
@@ -65,7 +158,10 @@ public class UIManager : MonoBehaviour
         if (b.name == "ButtonValidate")
         {
             if (int.TryParse(numberLabel.text, out int answer))
+            {
                 GameManager.Instance.Net.SendAnswer(answer);
+                numPad.SetEnabled(false);
+            }
         }
         else if (b.name == "ButtonDelete")
         {
@@ -80,20 +176,12 @@ public class UIManager : MonoBehaviour
     public IEnumerator ShowRoundResultsCoroutine(List<PlayerResult> roundResults)
     {
         EndRound();
+
+        this.roundResults = roundResults;
+        roundResultsTable.itemsSource = this.roundResults;
+        roundResultsTable.Rebuild();
+
         yield return _waitForSeconds1;
-    }
-
-    public IEnumerator ShowResultsCoroutine(Dictionary<int, PlayerStats> stats)
-    {
-        // resultsPanel.Clear();
-        // resultsPanel.RemoveFromClassList("hide");
-        // resultsPanel.Add(new Label("🏆 Classement final 🏆"));
-
-        // foreach (var s in stats.Values)
-        //     resultsPanel.Add(new Label($"{s.Name} : {s.Score} pts ({s.TotalTime:F2}s)"));
-
-        yield return _waitForSeconds10;
-        GameManager.Instance.EndGame();
     }
 
     public void StartRound()
@@ -102,6 +190,7 @@ public class UIManager : MonoBehaviour
         numPad.RemoveFromClassList("hide");
         resultsView.AddToClassList("hide");
         readyButton.SetEnabled(true);
+        numPad.SetEnabled(true);
     }
 
     public void EndRound()
@@ -119,6 +208,14 @@ public class UIManager : MonoBehaviour
     public void UpdateReadyCountLabel(int ready, int total)
     {
         readyCount.text = $"{ready}/{total}";
+        initReadyCount.text = $"{ready}/{total}";
         Debug.Log($"Ready count updated: {ready}/{total}");
+    }
+
+    public void ShowReadyButton()
+    {
+        initReady.RemoveFromClassList("hide");
+        initReadyCount.RemoveFromClassList("hide");
+        countdownLabel.AddToClassList("hide");
     }
 }

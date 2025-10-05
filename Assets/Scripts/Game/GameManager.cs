@@ -23,7 +23,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         Net = GetComponent<NetworkManager>();
     }
 
-    private void Start() => StartGame();
+    private void Start()
+    {
+        Net.ResetReadyCount();
+        UI.ShowReadyButton();
+    }
 
     public void StartGame()
     {

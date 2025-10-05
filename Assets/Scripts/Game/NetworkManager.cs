@@ -13,7 +13,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public const string RoomPropReadyCount = "ReadyCount";
 
     public readonly Dictionary<int, PlayerStats> GlobalStats = new();
-    private readonly List<PlayerResult> roundResults = new();
+    private List<PlayerResult> roundResults = new();
 
     // Accès rapide à la room
     private Room CurrentRoom => PhotonNetwork.CurrentRoom;
@@ -58,6 +58,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void RPC_StartGame()
+    {
+        GameManager.Instance.StartGame();
+        roundResults.Clear();
+    }
+
     #region --- Réponses des joueurs ---
 
     public void SendAnswer(int value)
@@ -84,12 +91,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         var diceValues = GameManager.Instance.Rounds.CurrentDiceValues;
         int product = diceValues.Aggregate(1, (a, b) => a * b);
         bool isCorrect = playerAnswer == product;
+        string playerName =
+            PhotonNetwork.CurrentRoom.GetPlayer(actorNumber)?.NickName ?? $"Joueur {actorNumber}";
 
         Debug.Log(
             $"[MASTER] Player {actorNumber}: {(isCorrect ? "✔️" : "❌")} ({responseTime:F2}s)"
         );
 
-        roundResults.Add(new PlayerResult(actorNumber, isCorrect, responseTime));
+        roundResults.Add(
+            new PlayerResult(playerName, playerAnswer, actorNumber, isCorrect, responseTime)
+        );
     }
 
     #endregion
@@ -135,21 +146,49 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient)
             return;
 
+        // Trie les résultats par réponse correcte puis par temps de réponse
+        roundResults = roundResults
+            .OrderByDescending(r => r.IsCorrect)
+            .ThenBy(r => r.ResponseTime)
+            .ToList();
+
         // Prépare les tableaux à envoyer
+        var playerNames = roundResults.Select(r => r.PlayerName).ToArray();
+        var answers = roundResults.Select(r => r.Answer).ToArray();
         var actors = roundResults.Select(r => r.ActorNumber).ToArray();
         var corrects = roundResults.Select(r => r.IsCorrect ? 1 : 0).ToArray();
         var times = roundResults.Select(r => r.ResponseTime).ToArray();
 
-        photonView.RPC(nameof(RPC_ShowResults), RpcTarget.All, actors, corrects, times);
+        photonView.RPC(
+            nameof(RPC_ShowResults),
+            RpcTarget.All,
+            playerNames,
+            answers,
+            actors,
+            corrects,
+            times
+        );
     }
 
     [PunRPC]
-    private void RPC_ShowResults(int[] actorNumbers, int[] isCorrect, float[] responseTimes)
+    private void RPC_ShowResults(
+        string[] playerNames,
+        int[] answers,
+        int[] actorNumbers,
+        int[] isCorrect,
+        float[] responseTimes
+    )
     {
         roundResults.Clear();
         for (int i = 0; i < actorNumbers.Length; i++)
             roundResults.Add(
-                new PlayerResult(actorNumbers[i], isCorrect[i] != 0, responseTimes[i])
+                new PlayerResult(
+                    playerNames[i],
+                    answers[i],
+                    actorNumbers[i],
+                    isCorrect[i] != 0,
+                    responseTimes[i]
+                )
             );
 
         UpdateGlobalStats(roundResults);
@@ -213,7 +252,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (readyCount >= PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("✅ Tous les joueurs sont prêts ! Lancement du prochain round...");
-            GameManager.Instance.StartGame();
+            photonView.RPC(nameof(RPC_StartGame), RpcTarget.All);
         }
     }
 
