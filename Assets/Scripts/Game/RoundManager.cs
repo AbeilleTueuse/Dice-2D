@@ -84,7 +84,11 @@ public class RoundManager : MonoBehaviourPun
         {
             var dieSO = dice[Random.Range(0, dice.Count)];
             Vector3 pos = GetRandomPosition(center, usedPositions);
-            var obj = PhotonNetwork.Instantiate(dieSO.ResourcePath, pos, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
+            var obj = PhotonNetwork.Instantiate(
+                dieSO.ResourcePath,
+                pos,
+                Quaternion.Euler(0, 0, Random.Range(0f, 360f))
+            );
             spawnedDice.Add(obj);
             CurrentDiceValues.Add(dieSO.Value);
         }

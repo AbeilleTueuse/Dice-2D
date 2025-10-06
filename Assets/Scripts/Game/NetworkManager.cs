@@ -174,7 +174,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             var prev = stats[i - 1];
             var curr = stats[i];
 
-            bool equal = curr.Score == prev.Score && Mathf.Approximately(curr.TotalTime, prev.TotalTime);
+            bool equal =
+                curr.Score == prev.Score && Mathf.Approximately(curr.TotalTime, prev.TotalTime);
 
             curr.Rank = equal ? prev.Rank : i + 1;
         }
@@ -241,8 +242,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         UpdateGlobalStats(roundResults);
 
         var globalResults = GlobalStats
-            .Values
-            .OrderByDescending(s => s.Score)
+            .Values.OrderByDescending(s => s.Score)
             .ThenBy(s => s.TotalTime)
             .ToList();
 
@@ -260,16 +260,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void UpdateGlobalStats(List<PlayerResult> results)
     {
-        var winner = results.Where(r => r.IsCorrect).OrderBy(r => r.ResponseTime).FirstOrDefault();
+        var correctPlayers = results.Where(r => r.IsCorrect).ToList();
+
+        if (correctPlayers.Count == 0)
+            return;
+
+        float bestTime = correctPlayers.Min(r => r.ResponseTime);
+
         foreach (var r in results)
         {
             if (!GlobalStats.TryGetValue(r.ActorNumber, out var stats))
-                GlobalStats[r.ActorNumber] = stats = new PlayerStats(PhotonNetwork.CurrentRoom.GetPlayer(r.ActorNumber)?.NickName ?? $"Joueur {r.ActorNumber}");
+            {
+                var player = PhotonNetwork.CurrentRoom.GetPlayer(r.ActorNumber);
+                GlobalStats[r.ActorNumber] = stats = new PlayerStats(
+                    player?.NickName ?? $"Joueur {r.ActorNumber}"
+                );
+            }
 
             if (r.IsCorrect)
             {
                 stats.TotalTime += r.ResponseTime;
-                if (winner != null && r.ActorNumber == winner.ActorNumber)
+
+                if (Mathf.Approximately(r.ResponseTime, bestTime))
                     stats.Score++;
             }
         }

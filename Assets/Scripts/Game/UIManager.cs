@@ -143,7 +143,8 @@ public class UIManager : MonoBehaviour
             var r = roundResults[i];
             var formattedAnswer = r.Answer.ToString("N0", GameManager.Instance.GameCulture);
 
-            top.text = $"{IndexToRank(r.Rank)}  {r.PlayerName} ({(r.IsCorrect && r.Rank == 1 ? "+1" : "+0")})";
+            top.text =
+                $"{IndexToRank(r.Rank)}  {r.PlayerName} ({(r.IsCorrect && r.Rank == 1 ? "+1" : "+0")})";
             bottom.text = $"Réponse : {formattedAnswer} en {r.ResponseTime:F1} s";
 
             // Couleur de fond selon la correction
@@ -188,7 +189,6 @@ public class UIManager : MonoBehaviour
                 element.AddToClassList("winner");
         };
     }
-
 
     public IEnumerator ShowCountdown(int from)
     {
@@ -286,7 +286,7 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    
+
     private void RestartAutoValidateTimer()
     {
         if (autoValidateCoroutine != null)
@@ -315,7 +315,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowRoundResults(List<PlayerResult> roundResults, int correctAnswer, List<PlayerStats> globalResults)
+    public void ShowRoundResults(
+        List<PlayerResult> roundResults,
+        int correctAnswer,
+        List<PlayerStats> globalResults
+    )
     {
         EndRound(correctAnswer);
 
