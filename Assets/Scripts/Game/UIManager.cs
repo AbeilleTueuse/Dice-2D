@@ -137,22 +137,7 @@ public class UIManager : MonoBehaviour
             bottom.text = $"Réponse : {formattedAnswer} en {r.ResponseTime:F1} s";
 
             // Couleur de fond selon la correction
-            element.style.backgroundColor = r.IsCorrect
-                ? new Color(0.2f, 0.6f, 0.2f, 0.25f)
-                : new Color(0.6f, 0.2f, 0.2f, 0.25f);
-
-            element.style.borderTopColor = r.IsCorrect
-                ? new Color(0.2f, 0.6f, 0.2f, 0.75f)
-                : new Color(0.6f, 0.2f, 0.2f, 0.75f);
-            element.style.borderBottomColor = r.IsCorrect
-                ? new Color(0.2f, 0.6f, 0.2f, 0.75f)
-                : new Color(0.6f, 0.2f, 0.2f, 0.75f);
-            element.style.borderLeftColor = r.IsCorrect
-                ? new Color(0.2f, 0.6f, 0.8f, 0.75f)
-                : new Color(0.6f, 0.2f, 0.8f, 0.75f);
-            element.style.borderRightColor = r.IsCorrect
-                ? new Color(0.2f, 0.6f, 0.8f, 0.75f)
-                : new Color(0.6f, 0.2f, 0.8f, 0.75f);
+            element.AddToClassList(r.IsCorrect ? "correct" : "incorrect");
         };
     }
 
