@@ -253,10 +253,6 @@
 }
 
 .quit {
-    background-color: rgba(139, 0, 0, 0.5);
-    border-radius: 16px;
-    border-width: 3px;
-    border-color: rgb(85, 85, 85);
     height: 80px;
     width: 80px;
     justify-content: center;
@@ -264,10 +260,11 @@
     padding: 0;
     width: auto;
     height: auto;
+    background-color: transparent;
+    border-color: transparent;
 }
 
 .quit:hover {
-    background-color: rgba(178, 34, 34, 0.7);
     scale: 1.05;
 }
 

@@ -1,5 +1,5 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/Style.uss?fileID=7433441132597879392&amp;guid=a62267ee241908e4383626990464fb52&amp;type=3#Style" />
+    <Style src="project://database/Assets/UI%20Toolkit/Style.uss?fileID=7433441132597879392&amp;guid=a62267ee241908e4383626990464fb52&amp;type=3" />
     <ui:VisualElement name="MenuRoot" class="menu-root">
         <ui:VisualElement name="MainView" class="hide">
             <ui:Button name="BackToMenuButton" text="Quitter la partie" class="menu-button" />
@@ -40,7 +40,7 @@
             <ui:Label name="CountdownLabel" class="countdown-label" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="ResultsView" class="hide" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(118, 162, 233, 0.2);">
+    <ui:VisualElement name="ResultsView" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(118, 162, 233, 0.2);">
         <ui:VisualElement name="ResultsContent" class="results-content" style="flex-grow: 1; align-self: center; width: 100%; justify-content: flex-end;">
             <ui:VisualElement name="ResultsRound" class="results-round" style="height: auto;">
                 <ui:Button name="QuitResultsButton" class="quit" style="position: absolute; top: 0; left: auto; right: 0; bottom: auto;">
