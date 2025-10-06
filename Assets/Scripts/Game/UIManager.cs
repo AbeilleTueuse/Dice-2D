@@ -30,11 +30,14 @@ public class UIManager : MonoBehaviour
     private ListView roundResultsTable;
     private Button showResults;
     private Label correctAnswerLabel;
-    private List<PlayerResult> roundResults = new();
-
     private ListView globalResultsTable;
+    private TabView resultsTabView;
+
+    private List<PlayerResult> roundResults = new();
     private List<PlayerStats> globalResults = new();
 
+    private Coroutine autoValidateCoroutine;
+    private float autoValidateDelay = 1f; // 1 seconde d'inactivité
 
     private void OnEnable()
     {
@@ -55,6 +58,7 @@ public class UIManager : MonoBehaviour
         correctAnswerLabel = root.Q<Label>("CorrectAnswerLabel");
         roundResultsTable = root.Q<ListView>("RoundResultsTable");
         globalResultsTable = root.Q<ListView>("GlobalResultsTable");
+        resultsTabView = root.Q<TabView>("ResultsTabView");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
@@ -267,21 +271,47 @@ public class UIManager : MonoBehaviour
         switch (b.name)
         {
             case "ButtonValidate":
-                if (TryGetNumberLabel(out int answer))
-                {
-                    GameManager.Instance.Net.SendAnswer(answer);
-                    numPad.SetEnabled(false);
-                    Debug.Log($"Answer sent: {answer}");
-                }
+                TryValidate();
                 break;
 
             case "ButtonDelete":
                 UpdateNumberLabel("", "delete");
+                RestartAutoValidateTimer();
                 break;
 
             default:
+                // Le joueur ajoute un chiffre → redémarre le timer
                 UpdateNumberLabel(b.text, "add");
+                RestartAutoValidateTimer();
                 break;
+        }
+    }
+    
+    private void RestartAutoValidateTimer()
+    {
+        if (autoValidateCoroutine != null)
+            StopCoroutine(autoValidateCoroutine);
+        autoValidateCoroutine = StartCoroutine(AutoValidateAfterDelay());
+    }
+
+    private IEnumerator AutoValidateAfterDelay()
+    {
+        yield return new WaitForSeconds(autoValidateDelay);
+        TryValidate();
+    }
+
+    private void TryValidate()
+    {
+        if (TryGetNumberLabel(out int answer))
+        {
+            GameManager.Instance.Net.SendAnswer(answer);
+            numPad.SetEnabled(false);
+        }
+
+        if (autoValidateCoroutine != null)
+        {
+            StopCoroutine(autoValidateCoroutine);
+            autoValidateCoroutine = null;
         }
     }
 
@@ -292,7 +322,7 @@ public class UIManager : MonoBehaviour
         this.roundResults = roundResults;
         roundResultsTable.itemsSource = this.roundResults;
         roundResultsTable.Rebuild();
-        
+
         this.globalResults = globalResults;
         globalResultsTable.itemsSource = globalResults;
         globalResultsTable.Rebuild();
@@ -322,13 +352,14 @@ public class UIManager : MonoBehaviour
             readyButton.text = "Quitter";
             readyCount.AddToClassList("hide");
         }
+
+        resultsTabView.selectedTabIndex = 0;
     }
 
     public void UpdateReadyCountLabel(int ready, int total)
     {
         readyCount.text = $"{ready}/{total}";
         initReadyCount.text = $"{ready}/{total}";
-        Debug.Log($"Ready count updated: {ready}/{total}");
     }
 
     public void ShowReadyButton()

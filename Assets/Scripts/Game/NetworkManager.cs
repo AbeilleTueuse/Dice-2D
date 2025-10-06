@@ -93,10 +93,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string playerName =
             PhotonNetwork.CurrentRoom.GetPlayer(actorNumber)?.NickName ?? $"Joueur {actorNumber}";
 
-        Debug.Log(
-            $"[MASTER] Player {actorNumber}: {(isCorrect ? "✔️" : "❌")} ({responseTime:F2}s)"
-        );
-
         roundResults.Add(
             new PlayerResult(
                 playerName,
@@ -306,13 +302,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         var props = new ExitGames.Client.Photon.Hashtable { [RoomPropReadyCount] = readyCount };
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
-        Debug.Log($"🔹 {readyCount}/{PhotonNetwork.CurrentRoom.PlayerCount} joueurs sont prêts.");
-
         if (readyCount >= PhotonNetwork.CurrentRoom.PlayerCount)
-        {
-            Debug.Log("✅ Tous les joueurs sont prêts ! Lancement du prochain round...");
             photonView.RPC(nameof(RPC_StartGame), RpcTarget.All);
-        }
     }
 
     public override void OnRoomPropertiesUpdate(

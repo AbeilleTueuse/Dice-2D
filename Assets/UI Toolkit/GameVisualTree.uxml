@@ -48,7 +48,7 @@
                 </ui:Button>
                 <ui:Label text="Résultats" class="round-info" style="margin-bottom: 30px;" />
                 <ui:Label text="La réponse était 1452." name="CorrectAnswerLabel" style="margin-bottom: 20px;" />
-                <ui:TabView style="width: 100%;">
+                <ui:TabView style="width: 100%;" name="ResultsTabView">
                     <ui:Tab label="Manche" name="Tab">
                         <ui:ListView virtualization-method="DynamicHeight" name="RoundResultsTable" />
                     </ui:Tab>
