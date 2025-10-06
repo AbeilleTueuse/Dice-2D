@@ -32,6 +32,10 @@ public class UIManager : MonoBehaviour
     private Label correctAnswerLabel;
     private List<PlayerResult> roundResults = new();
 
+    private ListView globalResultsTable;
+    private List<PlayerStats> globalResults = new();
+
+
     private void OnEnable()
     {
         root = uiDocument.rootVisualElement;
@@ -50,6 +54,7 @@ public class UIManager : MonoBehaviour
         showResults = root.Q<Button>("ShowResults");
         correctAnswerLabel = root.Q<Label>("CorrectAnswerLabel");
         roundResultsTable = root.Q<ListView>("RoundResultsTable");
+        globalResultsTable = root.Q<ListView>("GlobalResultsTable");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
@@ -58,6 +63,7 @@ public class UIManager : MonoBehaviour
         quitResultsButton.clicked += OnQuitResultsClick;
         root.Q<Button>("BackToMenuButton").clicked += () => GameManager.Instance.EndGame();
         InitializeResultsTable();
+        InitializeGlobalResultsTable();
     }
 
     private void OnReadyButtonClick()
@@ -133,13 +139,52 @@ public class UIManager : MonoBehaviour
             var r = roundResults[i];
             var formattedAnswer = r.Answer.ToString("N0", GameManager.Instance.GameCulture);
 
-            top.text = $"{IndexToRank(r.Rank)}  {r.PlayerName}";
+            top.text = $"{IndexToRank(r.Rank)}  {r.PlayerName} ({(r.IsCorrect && r.Rank == 1 ? "+1" : "+0")})";
             bottom.text = $"Réponse : {formattedAnswer} en {r.ResponseTime:F1} s";
 
             // Couleur de fond selon la correction
             element.AddToClassList(r.IsCorrect ? "correct" : "incorrect");
         };
     }
+
+    public void InitializeGlobalResultsTable()
+    {
+        globalResultsTable.makeItem = () =>
+        {
+            var container = new VisualElement();
+            container.AddToClassList("results-item");
+
+            var topRow = new Label
+            {
+                name = "topRow",
+                style = { unityFontStyleAndWeight = FontStyle.Bold },
+            };
+            var bottomRow = new Label
+            {
+                name = "bottomRow",
+                style = { color = new Color(0.8f, 0.8f, 0.8f) },
+            };
+
+            container.Add(topRow);
+            container.Add(bottomRow);
+            topRow.style.paddingTop = 20;
+            return container;
+        };
+
+        globalResultsTable.bindItem = (element, i) =>
+        {
+            var top = element.Q<Label>("topRow");
+            var bottom = element.Q<Label>("bottomRow");
+            var r = globalResults[i];
+
+            top.text = $"{IndexToRank(r.Rank)}  {r.Name}";
+            bottom.text = $"Score : {r.Score} en {r.TotalTime:F1} s";
+
+            if (r.Rank == 1 && r.Score > 0)
+                element.AddToClassList("winner");
+        };
+    }
+
 
     public IEnumerator ShowCountdown(int from)
     {
@@ -240,13 +285,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowRoundResultsCoroutine(List<PlayerResult> roundResults, int correctAnswer)
+    public void ShowRoundResults(List<PlayerResult> roundResults, int correctAnswer, List<PlayerStats> globalResults)
     {
         EndRound(correctAnswer);
 
         this.roundResults = roundResults;
         roundResultsTable.itemsSource = this.roundResults;
         roundResultsTable.Rebuild();
+        
+        this.globalResults = globalResults;
+        globalResultsTable.itemsSource = globalResults;
+        globalResultsTable.Rebuild();
     }
 
     public void StartRound()

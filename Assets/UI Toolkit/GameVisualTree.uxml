@@ -53,10 +53,7 @@
                         <ui:ListView virtualization-method="DynamicHeight" name="RoundResultsTable" />
                     </ui:Tab>
                     <ui:Tab label="Global" name="Tab">
-                        <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
-                            <ui:Label text="test" />
-                        </ui:VisualElement>
-                        <ui:MultiColumnListView virtualization-method="DynamicHeight" show-border="true" show-foldout-header="false" show-add-remove-footer="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" />
+                        <ui:ListView virtualization-method="DynamicHeight" name="GlobalResultsTable" />
                     </ui:Tab>
                 </ui:TabView>
             </ui:VisualElement>

@@ -166,6 +166,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void AssignRanksWithTiesGlobal(List<PlayerStats> stats)
+    {
+        if (stats.Count == 0)
+            return;
+
+        stats[0].Rank = 1;
+
+        for (int i = 1; i < stats.Count; i++)
+        {
+            var prev = stats[i - 1];
+            var curr = stats[i];
+
+            bool equal = curr.Score == prev.Score && Mathf.Approximately(curr.TotalTime, prev.TotalTime);
+
+            curr.Rank = equal ? prev.Rank : i + 1;
+        }
+    }
+
     public void EndRound()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -226,7 +244,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         UpdateGlobalStats(roundResults);
 
-        GameManager.Instance.UI.ShowRoundResultsCoroutine(roundResults, correctAnswer);
+        var globalResults = GlobalStats
+            .Values
+            .OrderByDescending(s => s.Score)
+            .ThenBy(s => s.TotalTime)
+            .ToList();
+
+        AssignRanksWithTiesGlobal(globalResults);
+
+        GameManager.Instance.UI.ShowRoundResults(roundResults, correctAnswer, globalResults);
 
         // Réinitialise le compteur pour le prochain round
         if (PhotonNetwork.IsMasterClient)
@@ -242,7 +268,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (var r in results)
         {
             if (!GlobalStats.TryGetValue(r.ActorNumber, out var stats))
-                GlobalStats[r.ActorNumber] = stats = new PlayerStats($"Joueur {r.ActorNumber}");
+                GlobalStats[r.ActorNumber] = stats = new PlayerStats(PhotonNetwork.CurrentRoom.GetPlayer(r.ActorNumber)?.NickName ?? $"Joueur {r.ActorNumber}");
 
             if (r.IsCorrect)
             {
