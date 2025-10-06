@@ -161,7 +161,7 @@ public class UIManager : MonoBehaviour
         countdownView.RemoveFromClassList("hide");
         countdownLabel.RemoveFromClassList("hide");
         roundInfo.text =
-            $"Manche {GameManager.Instance.Rounds.CurrentRound} / {GameManager.Instance.Rounds.MaxRounds}";
+            $"Manche {GameManager.Instance.Rounds.CurrentRound}/{GameManager.Instance.Rounds.MaxRounds}";
         roundInfo.RemoveFromClassList("hide");
         initReady.AddToClassList("hide");
         initReadyCount.AddToClassList("hide");
@@ -255,15 +255,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ShowRoundResultsCoroutine(List<PlayerResult> roundResults)
+    public void ShowRoundResultsCoroutine(List<PlayerResult> roundResults, int correctAnswer)
     {
-        EndRound();
+        EndRound(correctAnswer);
 
         this.roundResults = roundResults;
         roundResultsTable.itemsSource = this.roundResults;
         roundResultsTable.Rebuild();
-
-        yield return _waitForSeconds1;
     }
 
     public void StartRound()
@@ -275,7 +273,7 @@ public class UIManager : MonoBehaviour
         numPad.SetEnabled(true);
     }
 
-    public void EndRound()
+    public void EndRound(int correctAnswer)
     {
         numPad.AddToClassList("hide");
         resultsView.RemoveFromClassList("hide");
@@ -283,7 +281,7 @@ public class UIManager : MonoBehaviour
         showResults.AddToClassList("hide");
         var culture = GameManager.Instance.GameCulture;
         correctAnswerLabel.text =
-            $"La bonne réponse était {GameManager.Instance.Rounds.CurrentCorrectAnswer.ToString("N0", culture)}.";
+            $"La bonne réponse était {correctAnswer.ToString("N0", culture)}.";
 
         if (GameManager.Instance.Rounds.IsLastRound)
         {

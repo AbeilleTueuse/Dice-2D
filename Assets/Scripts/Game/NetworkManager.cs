@@ -195,7 +195,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             actors,
             corrects,
             times,
-            ranks
+            ranks,
+            GameManager.Instance.Rounds.CurrentCorrectAnswer
         );
     }
 
@@ -206,7 +207,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int[] actorNumbers,
         int[] isCorrect,
         float[] responseTimes,
-        int[] ranks
+        int[] ranks,
+        int correctAnswer
     )
     {
         roundResults.Clear();
@@ -224,7 +226,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         UpdateGlobalStats(roundResults);
 
-        StartCoroutine(GameManager.Instance.UI.ShowRoundResultsCoroutine(roundResults));
+        GameManager.Instance.UI.ShowRoundResultsCoroutine(roundResults, correctAnswer);
 
         // Réinitialise le compteur pour le prochain round
         if (PhotonNetwork.IsMasterClient)

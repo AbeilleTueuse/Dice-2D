@@ -36,7 +36,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (Rounds.CurrentRound >= Rounds.MaxRounds)
         {
             Debug.Log("Tous les rounds sont terminés !");
-            // StartCoroutine(UI.ShowFinalResultsCoroutine(Net.GlobalStats));
             return;
         }
 

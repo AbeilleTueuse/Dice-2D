@@ -265,11 +265,14 @@
 }
 
 .quit:hover {
+    background-color: rgba(92, 0, 0, 0.9);
+    border-radius: 50%;
     scale: 1.05;
 }
 
 .quit:active {
     background-color: rgba(92, 0, 0, 0.9);
+    border-radius: 50%;
     scale: 0.97;
 }
 
