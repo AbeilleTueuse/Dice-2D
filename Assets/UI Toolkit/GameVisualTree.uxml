@@ -45,6 +45,7 @@
                 </ui:TabView>
             </ui:VisualElement>
             <ui:Button text="Résultats" name="ShowResults" class="menu-button" style="margin-bottom: 0;" />
+            <ui:VisualElement name="FinalResults" class="hide" style="flex-grow: 1; background-color: rgb(253, 4, 4);" />
             <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-shrink: 0;">
                 <ui:Button text="Prêt" name="ReadyButton" class="menu-button" style="flex-grow: 1;" />
                 <ui:Label text="0/4" name="ReadyCount" class="ready-count-label" style="-unity-text-align: middle-center; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 20px; padding-bottom: 0; padding-left: 20px;" />

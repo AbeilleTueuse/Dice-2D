@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour
     private Label correctAnswerLabel;
     private ListView globalResultsTable;
     private TabView resultsTabView;
+    private VisualElement finalResults;
 
     private List<PlayerResult> roundResults = new();
     private List<PlayerStats> globalResults = new();
@@ -41,6 +42,8 @@ public class UIManager : MonoBehaviour
     private float autoValidateDelay = 1f; // 1 seconde d'inactivité
 
     private InputSystem_Actions inputActions;
+
+    private bool gameIsFinished = false;
 
     private void OnEnable()
     {
@@ -63,6 +66,7 @@ public class UIManager : MonoBehaviour
         roundResultsTable = root.Q<ListView>("RoundResultsTable");
         globalResultsTable = root.Q<ListView>("GlobalResultsTable");
         resultsTabView = root.Q<TabView>("ResultsTabView");
+        finalResults = root.Q<VisualElement>("FinalResults");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
@@ -94,13 +98,30 @@ public class UIManager : MonoBehaviour
     {
         if (GameManager.Instance.Rounds.IsLastRound)
         {
-            GameManager.Instance.EndGame();
+            if (gameIsFinished)
+            {
+                GameManager.Instance.EndGame();
+                return;
+            }
+            gameIsFinished = true;
+            readyButton.text = "Quitter";
+            readyButton.SetEnabled(false);
+            resultsRound.AddToClassList("hide");
+            showResults.AddToClassList("hide");
+            finalResults.RemoveFromClassList("hide");
+            StartCoroutine(EnableButtonAfterDelay(readyButton, 1f));
             return;
         }
         readyButton.SetEnabled(false);
         initReady.SetEnabled(false);
         PhotonView photonView = PhotonView.Get(GameManager.Instance.Net);
         photonView.RPC(nameof(NetworkManager.RPC_PlayerReady), RpcTarget.MasterClient);
+    }
+
+    private IEnumerator EnableButtonAfterDelay(Button button, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        button.SetEnabled(true);
     }
 
     private void OnShowResultsClick()
@@ -203,7 +224,8 @@ public class UIManager : MonoBehaviour
             var r = globalResults[i];
 
             top.text = $"{IndexToRank(r.Rank)}  {r.Name}";
-            bottom.text = $"Score : {r.Score} en {r.TotalTime:F1} s";
+            bottom.text =
+                $"Score : {r.Score} en {r.TotalTime:F1} s ({r.CorrectAnswers}/{r.TotalAnswers})";
 
             if (r.Rank == 1 && r.Score > 0)
                 element.AddToClassList("winner");
@@ -373,7 +395,7 @@ public class UIManager : MonoBehaviour
 
         if (GameManager.Instance.Rounds.IsLastRound)
         {
-            readyButton.text = "Quitter";
+            readyButton.text = "Continuer";
             readyCount.AddToClassList("hide");
         }
 

@@ -262,10 +262,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         var correctPlayers = results.Where(r => r.IsCorrect).ToList();
 
-        if (correctPlayers.Count == 0)
-            return;
-
-        float bestTime = correctPlayers.Min(r => r.ResponseTime);
+        float bestTime = correctPlayers.Count > 0 ? correctPlayers.Min(r => r.ResponseTime) : 0f;
 
         foreach (var r in results)
         {
@@ -280,6 +277,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (r.IsCorrect)
             {
                 stats.TotalTime += r.ResponseTime;
+                stats.CorrectAnswers++;
+                stats.TotalAnswers++;
 
                 if (Mathf.Approximately(r.ResponseTime, bestTime))
                     stats.Score++;

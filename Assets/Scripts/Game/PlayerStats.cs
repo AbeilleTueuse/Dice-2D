@@ -4,6 +4,8 @@ public class PlayerStats
     public int Score;
     public float TotalTime;
     public int Rank;
+    public int CorrectAnswers;
+    public int TotalAnswers;
 
     public PlayerStats(string name)
     {
@@ -11,5 +13,7 @@ public class PlayerStats
         Score = 0;
         TotalTime = 0;
         Rank = 0;
+        CorrectAnswers = 0;
+        TotalAnswers = 0;
     }
 }
