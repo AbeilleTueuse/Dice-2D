@@ -1,9 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Style.uss?fileID=7433441132597879392&amp;guid=a62267ee241908e4383626990464fb52&amp;type=3#Style" />
     <ui:VisualElement name="MenuRoot" class="menu-root">
-        <ui:VisualElement name="MainView" class="hide">
-            <ui:Button name="BackToMenuButton" text="Quitter la partie" class="menu-button" />
-        </ui:VisualElement>
         <ui:VisualElement name="UI">
             <ui:VisualElement name="NumPad">
                 <ui:Label name="NumberLabel" text="0" />
@@ -30,16 +27,6 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="CountdownView" class="countdown" style="flex-grow: 1;">
-        <ui:VisualElement name="VisualElement" style="flex-grow: 1; justify-content: center; max-width: 1080px; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; margin-top: auto; margin-right: auto; margin-bottom: auto; margin-left: auto; flex-shrink: 1; width: 100%;">
-            <ui:Label text="Manche 0/10" name="RoundInfo" class="round-info" style="margin-bottom: 0; margin-top: 0; margin-right: 0; margin-left: 0; padding-bottom: 0; padding-top: 0; padding-right: 0; padding-left: 0; translate: 0 -200px;" />
-            <ui:VisualElement name="VisualElement" style="flex-direction: column;">
-                <ui:Button text="Prêt" name="InitReadyButton" class="menu-button" style="flex-grow: 1; width: 100%;" />
-                <ui:Label name="InitReadyCount" class="ready-count-label" style="align-self: center;" />
-            </ui:VisualElement>
-            <ui:Label name="CountdownLabel" class="countdown-label" />
-        </ui:VisualElement>
-    </ui:VisualElement>
     <ui:VisualElement name="ResultsView" class="hide" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; align-self: center; align-items: stretch; justify-content: flex-end; align-content: flex-end; background-color: rgba(118, 162, 233, 0.2);">
         <ui:VisualElement name="ResultsContent" class="results-content" style="flex-grow: 1; align-self: center; width: 100%; justify-content: flex-end;">
             <ui:VisualElement name="ResultsRound" class="results-round" style="height: auto;">
@@ -48,7 +35,7 @@
                 </ui:Button>
                 <ui:Label text="Résultats" class="round-info" style="margin-bottom: 30px;" />
                 <ui:Label text="La réponse était 1452." name="CorrectAnswerLabel" style="margin-bottom: 20px;" />
-                <ui:TabView style="width: 100%;" name="ResultsTabView">
+                <ui:TabView name="ResultsTabView" style="width: 100%;">
                     <ui:Tab label="Manche" name="Tab">
                         <ui:ListView virtualization-method="DynamicHeight" name="RoundResultsTable" />
                     </ui:Tab>
@@ -62,6 +49,21 @@
                 <ui:Button text="Prêt" name="ReadyButton" class="menu-button" style="flex-grow: 1;" />
                 <ui:Label text="0/4" name="ReadyCount" class="ready-count-label" style="-unity-text-align: middle-center; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 20px; padding-bottom: 0; padding-left: 20px;" />
             </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="CountdownView" class="countdown" style="flex-grow: 1;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; justify-content: center; max-width: 1080px; padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px; margin-top: auto; margin-right: auto; margin-bottom: auto; margin-left: auto; flex-shrink: 1; width: 100%;">
+            <ui:Label text="Manche 0/10" name="RoundInfo" class="round-info" style="margin-bottom: 0; margin-top: 0; margin-right: 0; margin-left: 0; padding-bottom: 0; padding-top: 0; padding-right: 0; padding-left: 0; translate: 0 -200px;" />
+            <ui:VisualElement name="VisualElement" style="flex-direction: column;">
+                <ui:Button text="Prêt" name="InitReadyButton" class="menu-button" style="flex-grow: 1; width: 100%;" />
+                <ui:Label name="InitReadyCount" class="ready-count-label" style="align-self: center;" />
+            </ui:VisualElement>
+            <ui:Label name="CountdownLabel" class="countdown-label" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="MenuView" class="hide" style="height: 100%; width: 100%; position: absolute; align-self: stretch; align-content: stretch; justify-content: space-evenly; align-items: center; top: 0; left: 2px; background-color: rgb(159, 152, 152); padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px;">
+        <ui:VisualElement name="VisualElement" style="flex-direction: column; max-width: 1080px; flex-shrink: 0; width: 100%; translate: 0 -100px;">
+            <ui:Button text="Quitter la partie&#x9;" name="BackToMenuButton" focusable="false" class="menu-button" style="flex-grow: 1; width: 100%;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

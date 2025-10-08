@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Photon.Pun;
-using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     private VisualElement numPad;
     private Label numberLabel;
     private VisualElement resultsView;
+    private VisualElement menuView;
     private VisualElement resultsRound;
     private Button quitResultsButton;
     private Button initReady;
@@ -39,6 +40,8 @@ public class UIManager : MonoBehaviour
     private Coroutine autoValidateCoroutine;
     private float autoValidateDelay = 1f; // 1 seconde d'inactivité
 
+    private InputSystem_Actions inputActions;
+
     private void OnEnable()
     {
         root = uiDocument.rootVisualElement;
@@ -48,6 +51,7 @@ public class UIManager : MonoBehaviour
         numPad = root.Q<VisualElement>("NumPad");
         numberLabel = root.Q<Label>("NumberLabel");
         resultsView = root.Q<VisualElement>("ResultsView");
+        menuView = root.Q<VisualElement>("MenuView");
         resultsRound = root.Q<VisualElement>("ResultsRound");
         quitResultsButton = root.Q<Button>("QuitResultsButton");
         initReady = root.Q<Button>("InitReadyButton");
@@ -68,6 +72,22 @@ public class UIManager : MonoBehaviour
         root.Q<Button>("BackToMenuButton").clicked += () => GameManager.Instance.EndGame();
         InitializeResultsTable();
         InitializeGlobalResultsTable();
+
+        inputActions = new InputSystem_Actions();
+        inputActions.Enable();
+
+        inputActions.UI.Cancel.performed += OnCancelPerformed;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.UI.Cancel.performed -= OnCancelPerformed;
+        inputActions.Disable();
+    }
+
+    private void OnCancelPerformed(InputAction.CallbackContext context)
+    {
+        menuView.ToggleInClassList("hide");
     }
 
     private void OnReadyButtonClick()
