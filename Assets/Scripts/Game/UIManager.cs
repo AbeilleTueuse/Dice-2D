@@ -34,12 +34,13 @@ public class UIManager : MonoBehaviour
     private ListView globalResultsTable;
     private TabView resultsTabView;
     private VisualElement finalResults;
+    private Label endRoundCount;
 
     private List<PlayerResult> roundResults = new();
     private List<PlayerStats> globalResults = new();
 
     private Coroutine autoValidateCoroutine;
-    private float autoValidateDelay = 1f; // 1 seconde d'inactivité
+    private readonly float autoValidateDelay = 1f; // 1 seconde d'inactivité
 
     private InputSystem_Actions inputActions;
 
@@ -67,6 +68,7 @@ public class UIManager : MonoBehaviour
         globalResultsTable = root.Q<ListView>("GlobalResultsTable");
         resultsTabView = root.Q<TabView>("ResultsTabView");
         finalResults = root.Q<VisualElement>("FinalResults");
+        endRoundCount = root.Q<Label>("EndRoundCount");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
@@ -400,6 +402,7 @@ public class UIManager : MonoBehaviour
         }
 
         resultsTabView.selectedTabIndex = 0;
+        endRoundCount.text = $"Fin de la manche {GameManager.Instance.Rounds.CurrentRound}/{GameManager.Instance.Rounds.MaxRounds}.";
     }
 
     public void UpdateReadyCountLabel(int ready, int total)

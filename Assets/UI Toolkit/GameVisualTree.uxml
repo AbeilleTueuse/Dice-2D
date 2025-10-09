@@ -43,6 +43,7 @@
                         <ui:ListView virtualization-method="DynamicHeight" name="GlobalResultsTable" />
                     </ui:Tab>
                 </ui:TabView>
+                <ui:Label text="Fin de la manche 3/5" name="EndRoundCount" style="margin-bottom: 0; align-self: flex-end; margin-top: 20px; font-size: 32px;" />
             </ui:VisualElement>
             <ui:Button text="Résultats" name="ShowResults" class="menu-button" style="margin-bottom: 0;" />
             <ui:VisualElement name="FinalResults" class="hide" style="flex-grow: 1; background-color: rgb(253, 4, 4);" />
