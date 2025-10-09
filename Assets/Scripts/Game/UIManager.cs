@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     private TabView resultsTabView;
     private VisualElement finalResults;
     private Label endRoundCount;
+    private Label winnerLabel;
 
     private List<PlayerResult> roundResults = new();
     private List<PlayerStats> globalResults = new();
@@ -45,6 +46,7 @@ public class UIManager : MonoBehaviour
     private InputSystem_Actions inputActions;
 
     private bool gameIsFinished = false;
+    private string winnerName = "";
 
     private void OnEnable()
     {
@@ -69,6 +71,7 @@ public class UIManager : MonoBehaviour
         resultsTabView = root.Q<TabView>("ResultsTabView");
         finalResults = root.Q<VisualElement>("FinalResults");
         endRoundCount = root.Q<Label>("EndRoundCount");
+        winnerLabel = root.Q<Label>("WinnerLabel");
 
         numPad.RegisterCallback<ClickEvent>(OnNumPadClick);
         initReady.clicked += OnReadyButtonClick;
@@ -111,6 +114,7 @@ public class UIManager : MonoBehaviour
             resultsRound.AddToClassList("hide");
             showResults.AddToClassList("hide");
             finalResults.RemoveFromClassList("hide");
+            winnerLabel.text = $"🏆 {winnerName} 🏆";
             StartCoroutine(EnableButtonAfterDelay(readyButton, 1f));
             return;
         }
@@ -374,6 +378,8 @@ public class UIManager : MonoBehaviour
         this.globalResults = globalResults;
         globalResultsTable.itemsSource = globalResults;
         globalResultsTable.Rebuild();
+
+        winnerName = globalResults[0].Name;
     }
 
     public void StartRound()
