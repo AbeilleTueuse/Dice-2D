@@ -322,9 +322,10 @@ public class MenuManager : MonoBehaviourPunCallbacks
         PhotonNetwork.NickName = name;
 
         ShowView(_mainView);
+        _nameField.Blur();
     }
 
-    private void OnQuitButtonClicked()
+    private void OnQuitButtonClicked() 
     {
         Application.Quit();
 
