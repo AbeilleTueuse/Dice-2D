@@ -274,11 +274,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 );
             }
 
+            stats.TotalAnswers++;
+
             if (r.IsCorrect)
             {
                 stats.TotalTime += r.ResponseTime;
                 stats.CorrectAnswers++;
-                stats.TotalAnswers++;
 
                 if (Mathf.Approximately(r.ResponseTime, bestTime))
                     stats.Score++;
